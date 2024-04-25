@@ -26,26 +26,8 @@ const TabNavigator = () => {
         name="Home"
         component={HomeScreen}
         options={{
-          tabBarLabel: "Home",
+          tabBarLabel: "Переводчик",
           tabBarIcon: (props) => <Entypo name="home" size={props.size} color={props.color} />
-        }}
-      />
-
-      <Tab.Screen
-        name="Saved"
-        component={SavedScreen}
-        options={{
-          tabBarLabel: "Saved",
-          tabBarIcon: (props) => <Entypo name="star" size={props.size} color={props.color} />
-        }}
-      />
-
-      <Tab.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{
-          tabBarLabel: "Settings",
-          tabBarIcon: (props) => <Ionicons name="settings" size={props.size} color={props.color} />
         }}
       />
     </Tab.Navigator>
@@ -123,7 +105,14 @@ export default function App() {
 
           <Stack.Group
             screenOptions={{
-              presentation: 'containedModal'
+              presentation: 'containedModal',
+              headerStyle: {
+                backgroundColor: 'white'
+              },
+              headerTitleStyle: {
+                color: colors.textColor,
+                fontFamily: 'medium'
+              }
             }}
           >
             <Stack.Screen

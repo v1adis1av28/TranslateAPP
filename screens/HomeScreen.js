@@ -1,19 +1,60 @@
 import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { AntDesign, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import colors from '../utils/colors';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import supportedLanguages from '../utils/supportedLanguages';
+import axios from "axios";
 
 export default function HomeScreen(props) {
+    const params = props.route.params || {};
+
     const [enteredText, setEnteredText] = useState("");
     const [resultText, setResultText] = useState("");
+    const [languageTo, setLanguageTo] = useState("en-GB");
+    const [languageFrom, setLanguageFrom] = useState("ru-RU");
+
+    useEffect(() => {
+      if (params.languageTo) {
+          setLanguageTo(params.languageTo);
+      }
+
+      if (params.languageFrom) {
+          setLanguageFrom(params.languageFrom);
+      }
+  }, [params.languageTo, params.languageFrom])
+
+
+    const onSubmit = ( translate = () => {
+      if (!enteredText) {
+          setResultText('');
+          return;
+      }
+
+      setResultText('Translating...');
+
+      const apiUrl = 
+`https://api.mymemory.translated.net/get?q=
+  ${enteredText}&langpair=${languageFrom}|${languageTo}`;
+
+      fetch(apiUrl)
+          .then((res) => res.json())
+          .then((data) => {
+              setResultText(data.responseData.translatedText);
+              data.matches.forEach((data) => {
+                  if (data.id === 0) {
+                      setResultText(data.translation);
+                  }
+              });
+          });
+  });
 
   return (
       <View style={styles.container}>
         <View style={styles.languageContainer}>
             <TouchableOpacity
                 style={styles.languageOption}
-                onPress={() => props.navigation.navigate("languageSelect")}>
-                <Text style={styles.languageOptionText}>English</Text>
+                onPress={() => props.navigation.navigate("languageSelect", { title: "Translate from", selected: languageFrom, mode: 'from' })}>
+                <Text style={styles.languageOptionText}>{supportedLanguages[languageFrom]}</Text>
             </TouchableOpacity>
 
             <View style={styles.arrowContainer}>
@@ -22,15 +63,15 @@ export default function HomeScreen(props) {
 
             <TouchableOpacity
                 style={styles.languageOption}
-                onPress={() => console.log("Pressed")}>
-                <Text style={styles.languageOptionText}>French</Text>
+                onPress={() => props.navigation.navigate("languageSelect", { title: "Translate to", selected: languageTo, mode: 'to' })}>
+                <Text style={styles.languageOptionText}>{supportedLanguages[languageTo]}</Text>
             </TouchableOpacity>
         </View>
 
         <View style={styles.inputContainer}>
             <TextInput
                 multiline
-                placeholder='Enter text'
+                placeholder='Введите текст'
                 style={styles.textInput}
                 onChangeText={(text) => setEnteredText(text)}
             />
