@@ -5,6 +5,7 @@ import { StyleSheet, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import HomeScreen from './screens/HomeScreen';
 import LanguageSelectScreen from './screens/LanguageSelectScreen';
+import LoginScreen  from './screens/LoginScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider } from 'react-redux';
 import store from './redux/store';
@@ -52,6 +53,7 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer>
         <View onLayout={onLayout} style={{ flex: 1 }}>
+          
           <Stack.Navigator
            screenOptions={{
             headerTitleStyle: {
@@ -63,6 +65,8 @@ export default function App() {
             }
            }}>
             <Stack.Group>
+              <Stack.Screen name="Login"
+              component={LoginScreen}/>
               <Stack.Screen
                 name="Home"
                 component={HomeScreen}
